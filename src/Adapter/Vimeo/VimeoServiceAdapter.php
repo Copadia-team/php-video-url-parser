@@ -51,9 +51,9 @@ class VimeoServiceAdapter extends AbstractServiceAdapter
         $videoDataMedium = $this->getVideoDataFromServiceApi($url, self::THUMBNAIL[self::THUMBNAIL_MEDIUM]);
         $videoDataLarge = $this->getVideoDataFromServiceApi($url, self::THUMBNAIL[self::THUMBNAIL_LARGE]);
         $this->setThumbnails([
-            self::THUMBNAIL_SMALL => $videoDataSmall['thumbnail_url_with_play_button'],
-            self::THUMBNAIL_MEDIUM => $videoDataMedium['thumbnail_url_with_play_button'],
-            self::THUMBNAIL_LARGE => $videoDataLarge['thumbnail_url_with_play_button'],
+            self::THUMBNAIL_SMALL => $videoDataSmall['thumbnail_url'],
+            self::THUMBNAIL_MEDIUM => $videoDataMedium['thumbnail_url'],
+            self::THUMBNAIL_LARGE => $videoDataLarge['thumbnail_url'],
         ]);
 
         $this->setTitle($videoDataSmall['title']);
@@ -131,7 +131,7 @@ class VimeoServiceAdapter extends AbstractServiceAdapter
      *
      * @throws InvalidThumbnailSizeException
      */
-    public function getThumbnail($size, $forceSecure = false)
+    public function getThumbnail($size = self::THUMBNAIL_SMALL, $forceSecure = false)
     {
         if (false == in_array($size, $this->getThumbNailSizes())) {
             throw new InvalidThumbnailSizeException();
@@ -253,7 +253,7 @@ class VimeoServiceAdapter extends AbstractServiceAdapter
      */
     private function getVideoDataFromServiceApi($url, $thumbnail)
     {
-        $contents = file_get_contents('https://vimeo.com/api/oembed.json?url=' . $url.'&thumbnail_width='.$thumbnail['thumbnail_width'].'&thumbnail_height='.$thumbnail['thumbnail_height']);
+        $contents = file_get_contents('https://vimeo.com/api/oembed.json?url=' . $url.'&width='.$thumbnail['thumbnail_width'].'&height='.$thumbnail['thumbnail_height']);
         if (false === $contents) {
             throw new ServiceApiNotAvailable('Vimeo Service Adapter could not reach Vimeo API Service. Check if your server has file_get_contents() function available.');
         }
